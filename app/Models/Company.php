@@ -16,6 +16,15 @@ class Company extends Model
     ];
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'user_company')->withTimestamps();
+    }
+    public function casts()
+    {
+        return [
+            'is_active' => 'boolean',
+            'created_at' => 'datetime:Y-m-d',
+            'updated_at' => 'datetime:Y-m-d',
+            'deleted_at' => 'datetime:Y-m-d',
+        ];
     }
 }

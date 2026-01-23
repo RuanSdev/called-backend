@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCompany;
 use App\Models\Company;
 use App\Models\User;
-use Illuminate\Http\Request;
-use League\Uri\Http;
+
 
 class CompanyController extends Controller
 {
@@ -19,6 +18,7 @@ class CompanyController extends Controller
     public function index()
     {
 
+        // dd('aqui');
         $data = $this->company->with('users')->get();
         return response()->json($data, 200);
     }

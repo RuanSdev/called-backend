@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,10 +21,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'company_id',
+        'role_id',
         'is_active',
-
-
     ];
 
     /**
@@ -43,10 +40,32 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array<string, string>
      */
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'user_company')->withTimestamps();
+    }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
+    public function hasPermission($permissionName)
+    {
+        return $this->roles()
+            ->whereHas('permissions', fn($q) => $q->where('name', $permissionName))
+            ->exists();
+    }
     protected function casts(): array
     {
         return [
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'created_at' => 'datetime:Y-m-d',
+            'updated_at' => 'datetime:Y-m-d',
+            'deleted_at' => 'datetime:Y-m-d',
         ];
     }
     public function getJWTIdentifier()

@@ -16,30 +16,33 @@ class UserController extends Controller
     {
         $this->user = $user;
     }
-    public function index(Request $request)
+    public function index()
     {
-
-        dd(Auth::attempt($request->all()));
-        if (Auth::attempt($request->only('email', 'password'))) {
-            dd("ok");
-            return response()->json($user, 200);
-        }
-        return response()->json(['message' => 'Credenciais inválidas'], 401);
+        $users = $this->user->paginate(10);
+        // dd($users->toArray()["data"]);
+        return response()->json($users->items(), 200);
     }
     public function store(CreateUser $request)
     {
-
-        // dd($request->all());
         $validate = $request->validated();
-        // dd($validate);
         $validate['password'] = bcrypt($validate['password']);
-        $validate['confirmed'] = bcrypt($validate['confirmed']);
         unset($validate['confirmed']);
 
 
-        $data = $this->user->create($validate);
-        return response()->json($data, 201);
+        $user = \DB::transaction(function () use ($validate, $request) {
+            $user = $this->user->create($validate);
+
+
+            $user->companies()->attach($request->company_id);
+
+            return $user;
+        });
+
+        $user->load('companies');
+
+        return response()->json($user, 201);
     }
+
     public function update(UpdateUser $request, User $id)
     {
         $validate = $request->validated();
@@ -50,5 +53,9 @@ class UserController extends Controller
         }
         $id->update($validate);
         return response()->json(['status' => 'Usuário atualizado com sucesso', 'user' => $id], 200);
+    }
+    public function show(User $id)
+    {
+        return response()->json($id, HTTP_OK);
     }
 }
