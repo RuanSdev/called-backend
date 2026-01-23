@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests\AuthLogin;
+use App\Http\Requests\Auth\AuthLogin;
 use Exception;
 
 class LoginController extends Controller

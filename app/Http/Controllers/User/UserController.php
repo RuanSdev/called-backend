@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Requests\CreateUser;
+use App\Http\Requests\User\CreateUser;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Requests\UpdateUser;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\User\UpdateUser;
+
 
 class UserController extends Controller
 {
