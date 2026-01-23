@@ -2,18 +2,12 @@
 
 namespace App\Http\Requests\Role;
 
-
-
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-
-
-class CreateRole extends FormRequest
+class CreatePermission extends FormRequest
 {
-
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,16 +24,15 @@ class CreateRole extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => 'required|string|max:255|min:3|unique:roles',
+            'name' => 'required|min:3|string|max:255|unique:permissions',
         ];
     }
     public function messages(): array
     {
         return [
             'name.required' => 'O campo nome é obrigatório.',
-            'name.unique' => 'Função já cadastrada.',
+            'name.unique' => 'Permissão já cadastrada.',
             'name.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
-            'name.max' => 'Campo nome deve ter no máximo 255 caracteres.',
             'name.string' => 'O campo nome deve ser uma string.',
         ];
     }
@@ -49,5 +42,6 @@ class CreateRole extends FormRequest
             'message' => 'Erro de validação',
             'errors' => $validator->errors(),
         ], 422));
+
     }
 }

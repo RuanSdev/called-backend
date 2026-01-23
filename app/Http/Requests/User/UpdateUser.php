@@ -13,7 +13,7 @@ class UpdateUser extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->guard('api')->hasUser();
     }
 
     /**

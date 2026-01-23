@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\CreateRole;
 use App\Models\Role;
-use Exception;
-use Illuminate\Http\Request;
+use PDOException;
 
 class RoleController extends Controller
 {
@@ -14,14 +13,14 @@ class RoleController extends Controller
     {
 
         $data = $request->validated();
-        // dd($data);
+
         try {
             $role = Role::create($data);
             return response()->json([
                 'message' => 'Role created successfully',
                 'role' => $role
             ], 201);
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             return response()->json([
                 'message' => 'Error creating role',
                 'error' => $e->getMessage()

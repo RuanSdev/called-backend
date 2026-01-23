@@ -13,4 +13,13 @@ class Permission extends Model
     {
         return $this->belongsToMany(Role::class);
     }
+
+
+    public function casts()
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d',
+            'updated_at' => 'datetime:Y-m-d',
+        ];
+    }
 }

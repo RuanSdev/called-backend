@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\User\UserController;
@@ -34,7 +35,10 @@ Route::middleware(JwtMiddleware::class)->group(function () {
     Route::prefix('admin')->group(function () {
         Route::post('/roles', [RoleController::class, 'store'])->name('createRole');
         Route::get('/roles/{id}', [RoleController::class, 'show'])->name('showRole');
+        Route::post('/permissions', [PermissionController::class, 'store'])->name('createPermissions');
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('listPermissions');
+
     });
 
-    Route::get('/logout', [LogoutController::class, '__invoke'])->name('Logout');
+    Route::get('/logout', [LogoutController::class, 'logout'])->name('Logout');
 });
