@@ -29,6 +29,7 @@ class CreateUser extends FormRequest
             'password' => 'required|string|min:8|required_with:confirmed|same:confirmed',
             'company_id' => 'required|exists:companies,id',
             'confirmed' => 'required|string|min:8',
+            'role_id' => 'nullable|exists:roles,id',
         ];
     }
     public function messages(): array
@@ -45,6 +46,9 @@ class CreateUser extends FormRequest
             'confirmed.required' => 'O campo confirmação de senha é obrigatório.',
             'confirmed.min' => 'A confirmação da senha deve ter no mínimo 8 caracteres.',
             'company_id.required' => "O campo empresa é Obrigatório.",
+            'role_id.exists' => 'O tipo usuário informado não existe.',
+            'role_id.numeric' => 'O id do tipo usuário deve ser um número.',
+
 
 
         ];

@@ -6,6 +6,7 @@ use App\Http\Requests\User\CreateUser;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\User\UpdateUser;
+use DB;
 
 
 class UserController extends Controller
@@ -25,20 +26,26 @@ class UserController extends Controller
     {
         $validate = $request->validated();
         $validate['password'] = bcrypt($validate['password']);
+        $company_id = $validate['company_id'];
+        $role_id = $validate['role_id'];
         unset($validate['confirmed']);
+        unset($validate['company_id']);
+        unset($validate['role_id']);
 
 
-        $user = \DB::transaction(function () use ($validate, $request) {
-            $user = $this->user->create($validate);
 
-
-            $user->companies()->attach($request->company_id);
-
-            return $user;
+        // $user = \DB::transaction(function () use ($validate) {
+        $user = DB::transaction(function () use ($validate, $company_id, $role_id) {
+            return $this->user->create($validate);
         });
 
-        $user->load('companies');
 
+        $user->companies()->sync([$company_id]);
+        $user->roles()->sync([$role_id]);
+        // return $user;
+        // });
+
+        $user->load('companies', 'roles');
         return response()->json($user, 201);
     }
 

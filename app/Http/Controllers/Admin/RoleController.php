@@ -6,11 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\CreateRole;
 use App\Models\Role;
 use PDOException;
+use Exception;
 
 class RoleController extends Controller
 {
+    public function index()
+    {
+
+
+        $roles = Role::all();
+        return response()->json($roles, 200);
+    }
     public function store(CreateRole $request)
     {
+
+        if (!auth()->user()->hasRole('admin')) {
+            throw new Exception('Seu Usuário não tem permissão para acessar esta funcionalidade', 403);
+        }
 
         $data = $request->validated();
 
@@ -46,4 +58,5 @@ class RoleController extends Controller
             ], 404);
         }
     }
+
 }
