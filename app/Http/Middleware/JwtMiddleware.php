@@ -16,6 +16,7 @@ class JwtMiddleware
         if (!auth('api')->check()) {
             return response()->json(['message' => 'Não autorizado'], 401);
         }
+
         $user = JWTAuth::parseToken()->authenticate();
         auth()->setUser($user);
         return $next($request);

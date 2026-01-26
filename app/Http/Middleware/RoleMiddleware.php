@@ -17,7 +17,7 @@ class RoleMiddleware
     {
 
         if (!auth()->user()->hasRole('admin')) {
-            return response()->json(['Acesso-negado' => 'Seu Usuário não tem permissão para acessar esta funcionalidade'], 403);
+            return response()->json(['Acesso-negado' => 'Seu Usuário não é administrador.'], 403);
         }
         return $next($request);
     }

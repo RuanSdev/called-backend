@@ -15,6 +15,9 @@ class LoginController extends Controller
 
         try {
             if ($token = auth('api')->attempt($credentials)) {
+                if (auth('api')->user()->is_active === false) {
+                    throw new Exception('Usuário inativo. Entre em contato com o administrador do sistema.');
+                }
                 return response()->json([
                     'token' => $token,
                     'token_type' => 'bearer',
@@ -27,7 +30,7 @@ class LoginController extends Controller
             throw new Exception('Credenciais inválidas');
 
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 401);
+            return response()->json(['error' => $e->getMessage()], 401);
         }
 
     }

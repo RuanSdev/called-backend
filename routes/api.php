@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Company\CompanyController;
@@ -25,8 +26,16 @@ Route::middleware(JwtMiddleware::class)->group(function () {
 
     Route::prefix('users')->group(function () {
         Route::post('/', [UserController::class, 'store'])->name('createUser');
-        Route::put('{id}', [UserController::class, 'update'])->name('updateUser');
-        Route::get('/', [UserController::class, 'index'])->name('listUsers');
+        Route::put('{user}', [UserController::class, 'update'])->name('updateUser');
+
+        Route::get('/', [UserController::class, 'index'])
+            ->middleware(PermissionMiddleware::class . ':List-users')
+            ->name('listUsers');
+
+        Route::get('{user}', [UserController::class, 'show'])
+            ->middleware(PermissionMiddleware::class . ':Get-user')
+            ->name('GetUser');
+        Route::delete('{user}', [UserController::class, 'destroy'])->name('deleteUser');
     });
 
     Route::prefix('companies')->group(function () {
