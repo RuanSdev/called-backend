@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ class RoleMiddleware
     {
 
         if (!auth()->user()->hasRole('admin')) {
-            return response()->json(['Acesso-negado' => 'Seu Usuário não é administrador.'], 403);
+            return ApiResponse::error('Acesso negado: Seu Usuário não é administrador.', null, 403);
         }
         return $next($request);
     }

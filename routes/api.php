@@ -25,8 +25,13 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::middleware(JwtMiddleware::class)->group(function () {
 
     Route::prefix('users')->group(function () {
-        Route::post('/', [UserController::class, 'store'])->name('createUser');
-        Route::put('{user}', [UserController::class, 'update'])->name('updateUser');
+        Route::post('/', [UserController::class, 'store'])
+            ->middleware(PermissionMiddleware::class . ':Create-user')
+            ->name('createUser');
+
+        Route::put('{user}', [UserController::class, 'update'])
+            ->middleware(PermissionMiddleware::class . ':Update-user')
+            ->name('updateUser');
 
         Route::get('/', [UserController::class, 'index'])
             ->middleware(PermissionMiddleware::class . ':List-users')
@@ -35,12 +40,21 @@ Route::middleware(JwtMiddleware::class)->group(function () {
         Route::get('{user}', [UserController::class, 'show'])
             ->middleware(PermissionMiddleware::class . ':Get-user')
             ->name('GetUser');
-        Route::delete('{user}', [UserController::class, 'destroy'])->name('deleteUser');
+
+        Route::delete('{user}', [UserController::class, 'destroy'])
+            ->middleware(PermissionMiddleware::class . ':Delete-user')
+            ->name('deleteUser');
+
     });
 
     Route::prefix('companies')->group(function () {
-        Route::post('/', [CompanyController::class, 'store'])->name('createCompany');
-        Route::get('/', [CompanyController::class, 'index'])->name('listCompanies');
+        Route::post('/', [CompanyController::class, 'store'])
+            ->middleware(PermissionMiddleware::class . ':Create-company')
+            ->name('createCompany');
+
+        Route::get('/', [CompanyController::class, 'index'])
+            ->middleware(PermissionMiddleware::class . ':List-companies')
+            ->name('listCompanies');
 
     });
 
