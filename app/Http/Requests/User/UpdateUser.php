@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -13,7 +13,7 @@ class UpdateUser extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->guard('api')->hasUser();
     }
 
     /**

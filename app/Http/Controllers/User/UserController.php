@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Requests\CreateUser;
+use App\Http\Requests\User\CreateUser;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Requests\UpdateUser;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\User\UpdateUser;
+use DB;
+use Exception;
+
 
 class UserController extends Controller
 {
@@ -26,24 +27,30 @@ class UserController extends Controller
     {
         $validate = $request->validated();
         $validate['password'] = bcrypt($validate['password']);
+        $company_id = $validate['company_id'];
+        $role_id = $validate['role_id'];
         unset($validate['confirmed']);
+        unset($validate['company_id']);
+        unset($validate['role_id']);
 
 
-        $user = \DB::transaction(function () use ($validate, $request) {
-            $user = $this->user->create($validate);
 
-
-            $user->companies()->attach($request->company_id);
-
-            return $user;
+        // $user = \DB::transaction(function () use ($validate) {
+        $user = DB::transaction(function () use ($validate, $company_id, $role_id) {
+            return $this->user->create($validate);
         });
 
-        $user->load('companies');
 
+        $user->companies()->sync([$company_id]);
+        $user->roles()->sync([$role_id]);
+        // return $user;
+        // });
+
+        $user->load('companies', 'roles');
         return response()->json($user, 201);
     }
 
-    public function update(UpdateUser $request, User $id)
+    public function update(UpdateUser $request, User $user)
     {
         $validate = $request->validated();
         if ((isset($validate['password']) && isset($validate['confirmed']))) {
@@ -51,11 +58,22 @@ class UserController extends Controller
             unset($validate['confirmed']); {
             }
         }
-        $id->update($validate);
-        return response()->json(['status' => 'Usuário atualizado com sucesso', 'user' => $id], 200);
+        $user->update($validate);
+        return response()->json(['status' => 'Usuário atualizado com sucesso', 'user' => $user], 200);
     }
-    public function show(User $id)
+    public function show(User $user)
     {
-        return response()->json($id, HTTP_OK);
+        $user->load('companies', 'roles');
+        return response()->json($user, 200);
+    }
+
+    public function destroy(User $user)
+    {
+
+        $user->companies()->detach();
+        $user->roles()->detach();
+        $user->delete();
+        return response()->json(['status' => 'Usuário deletado com sucesso'], 200);
     }
 }
+

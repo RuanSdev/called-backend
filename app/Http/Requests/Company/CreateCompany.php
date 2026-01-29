@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Company;
 
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,7 +14,7 @@ class CreateCompany extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->guard('api')->hasUser();
     }
 
     /**

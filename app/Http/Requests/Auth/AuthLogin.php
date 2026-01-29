@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -37,7 +37,7 @@ class AuthLogin extends FormRequest
             'password.min' => 'A senha deve ter no mínimo 8 caracteres.',
         ];
     }
-    public  function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'message' => 'Erro de validação',

@@ -3,25 +3,36 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateRole;
+use App\Http\Requests\Role\CreateRole;
 use App\Models\Role;
+use PDOException;
 use Exception;
-use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    public function index()
+    {
+
+
+        $roles = Role::all();
+        return response()->json($roles, 200);
+    }
     public function store(CreateRole $request)
     {
 
+        if (!auth()->user()->hasRole('admin')) {
+            throw new Exception('Seu Usuário não tem permissão para acessar esta funcionalidade', 403);
+        }
+
         $data = $request->validated();
-        // dd($data);
+
         try {
             $role = Role::create($data);
             return response()->json([
                 'message' => 'Role created successfully',
                 'role' => $role
             ], 201);
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             return response()->json([
                 'message' => 'Error creating role',
                 'error' => $e->getMessage()
@@ -47,4 +58,5 @@ class RoleController extends Controller
             ], 404);
         }
     }
+
 }

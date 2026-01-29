@@ -7,5 +7,8 @@ use Illuminate\Http\Request;
 
 class UserRoleController extends Controller
 {
-    //
+    public function assignRoleToUser(Request $request)
+    {
+        dd($request->all());
+    }
 }

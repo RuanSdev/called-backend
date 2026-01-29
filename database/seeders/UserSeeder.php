@@ -16,8 +16,15 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Admin User',
-                'email' => 'admin@admin.com',
-                'password' => bcrypt('12345678'),
+                'email' => 'admin@called.com',
+                'password' => bcrypt('12345678')
+
+            ],
+            [
+                'name' => 'Self-service',
+                'email' => 'self-service@called.com',
+                'password' => bcrypt('12345678')
+
             ],
         ];
 
