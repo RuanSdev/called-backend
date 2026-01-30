@@ -29,12 +29,15 @@ class CompanyController extends Controller
         $data = $this->company->create($validete);
 
 
-        return response()->json(['status' => 'Empresa criada com sucesso', ["all" => $data]], 201);
+        return ApiResponse::success('Empresa criada com sucesso', $data->attributesToArray(), 201);
     }
 
     public function show(Company $company)
     {
-        $data = $this->company->with("users")->get();
+
+        $data = $this->company->findOrFail($company->id);
+
+        return ApiResponse::success("Empresa encontrada.", $data->attributesToArray(), 200);
     }
 
     public function update(UpdateCompany $request, Company $company)
@@ -47,6 +50,21 @@ class CompanyController extends Controller
             return ApiResponse::success('Empresa atualizada com sucesso!', $company->attributesToArray(), 200);
         }
         return ApiResponse::error('Erro ao tentar atualizar a empresa.', null, 200);
+
+    }
+    public function destroy(Company $company)
+    {
+
+        $validete = $company->delete();
+        if ($validete) {
+            return ApiResponse::success(
+                'Empresa deletada com sucesso.',
+                $company->attributesToArray(),
+                200
+            );
+        }
+        return ApiResponse::error('Erro ao tentar deletar a empresa', null, '');
+
 
     }
 
