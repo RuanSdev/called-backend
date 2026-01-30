@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\RoleMiddleware;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Middleware\JwtMiddleware;
@@ -55,6 +56,17 @@ Route::middleware(JwtMiddleware::class)->group(function () {
         Route::get('/', [CompanyController::class, 'index'])
             ->middleware(PermissionMiddleware::class . ':List-companies')
             ->name('listCompanies');
+        Route::get('{company}', [CompanyController::class, 'show'])
+            ->middleware(PermissionMiddleware::class . ':Get-company')
+            ->name('getCompany');
+
+        Route::put('{company}', [CompanyController::class, 'update'])
+            ->middleware(PermissionMiddleware::class . ':Update-company')
+            ->name('updateCompany');
+
+        Route::delete('{company}', [CompanyController::class, 'destroy'])
+            ->middleware(PermissionMiddleware::class . ':Delete-company')
+            ->name('deleteCompany');
 
     });
 
