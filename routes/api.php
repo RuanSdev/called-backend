@@ -56,6 +56,8 @@ Route::middleware(JwtMiddleware::class)->group(function () {
             ->middleware(PermissionMiddleware::class . ':List-companies')
             ->name('listCompanies');
 
+        Route::put('{company}', [CompanyController::class, 'update'])->name('updateCompany');
+
     });
 
     Route::prefix('admin')->group(function () {
